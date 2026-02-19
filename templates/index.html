@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Automotive Vehicle Management</title>
+    <script>
+        async function addVehicle() {
+            const brand = document.getElementById("brand").value;
+            const model = document.getElementById("model").value;
+            const year = document.getElementById("year").value;
+            const owner = document.getElementById("owner").value;
+
+            const response = await fetch("/vehicles/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ brand, model, year: parseInt(year), owner })
+            });
+
+            if (response.ok) {
+                alert("Vehicle Added Successfully!");
+                loadVehicles();
+                document.getElementById("vehicleForm").reset();
+            } else {
+                alert("Error adding vehicle");
+            }
+        }
+
+        async function loadVehicles() {
+            const response = await fetch("/vehicles/");
+            const vehicles = await response.json();
+
+            const tableBody = document.getElementById("vehicleTable");
+            tableBody.innerHTML = "";
+
+            vehicles.forEach(v => {
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${v.id}</td>
+                        <td>${v.brand}</td>
+                        <td>${v.model}</td>
+                        <td>${v.year}</td>
+                        <td>${v.owner}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.onload = loadVehicles;
+    </script>
+</head>
+
+<body>
+    <h2>🚗 Automotive Vehicle Management</h2>
+
+    <form id="vehicleForm" onsubmit="event.preventDefault(); addVehicle();">
+        <input type="text" id="brand" placeholder="Brand" required>
+        <input type="text" id="model" placeholder="Model" required>
+        <input type="number" id="year" placeholder="Year" required>
+        <input type="text" id="owner" placeholder="Owner" required>
+        <button type="submit">Add Vehicle</button>
+    </form>
+
+    <h3>Vehicle List</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Year</th>
+                <th>Owner</th>
+            </tr>
+        </thead>
+        <tbody id="vehicleTable"></tbody>
+    </table>
+
+</body>
+</html>
