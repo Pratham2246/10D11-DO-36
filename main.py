@@ -45,7 +45,7 @@ def health():
 @app.post("/vehicles")
 def add_vehicle(vehicle: Vehicle):
     vehicles_db.append(vehicle)
-    return {"message": "Vehicle added successfully"}
+    return vehicle
 
 # View All Vehicles
 @app.get("/vehicles")
